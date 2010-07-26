@@ -67,6 +67,10 @@
     {
         echo $args['before_widget'];
         echo $args['before_title'].'My Location'.$args['after_title'];
+        ?>
+        <div id="map_canvas" style="width:100%; height:100px;"></div>
+
+        <?php 
         echo 'Last updated at:';
         echo $args['after_widget'];
     }
@@ -81,9 +85,35 @@
     function load_into_head()
     {
         ?>
-         <script src="http://maps.google.com/maps?file=api&amp;v=2&amp;sensor=true&amp;key=ABQIAAAAB0UeAVrHcKYQ0N4whilWdxSKLsCOZAQ73leuG-EShkJXto1kLBR8uSVUmJINExyDsq4A4RhP5IsWnA" type="text/javascript"></script>
+        <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
+        <script type="text/javascript">
+        function map_init() {
+            var latlng = new google.maps.LatLng(31.803694,35.208861);
+            var options = {
+                disableDefaultUI: true,
+                zoom: 5,
+                draggable: false,
+                disableDoubleClickZoom: true,
+                center: latlng,
+                mapTypeId: google.maps.MapTypeId.ROADMAP
+            }
+            var map = new google.maps.Map(document.getElementById("map_canvas"), options);
+            var marker = new google.maps.Marker({
+                position: latlng,
+                map: map,
+                title: "I'm currently here!"
+            });
+        }
+        </script>
          <?php 
     }
 
     add_action(is_admin() ? 'admin_head' : 'wp_head', 'load_into_head');
+
+    function filter_body($text)
+    {
+        return $text;
+    }
+
+    add_filter('body_onload', 'filter_body');
 ?>
