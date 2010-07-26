@@ -7,7 +7,7 @@
     Version: 1.0
     */
 
-    function locateme_install()
+    function locateme_activate()
     {
         global $wpdb;
         $table = $wpdb->prefix."locateme_positions";
@@ -16,8 +16,55 @@
             lon FLOAT,
             lat FLOAT,
             accuracy INT(9),
+            timestamp TIMESTAMP,
             UNIQUE KEY id (id)
         );";
         $wpdb->query($structure);
     }
+
+    add_action('activate_locateme/locateme.php', 'locateme_activate');
+
+    function locateme_deactivate()
+    {
+        global $wpdb;
+        $table = $wpdb->prefix."locateme_positions";
+        $wpdb->query("DROP TABLE $table");
+    }
+
+    add_action('deactivate_locateme/locateme.php', 'locateme_deactivate');
+
+    function log_location()
+    {
+        if (!empty($_GET['lon']) && !empty($_GET['lat']) && !empty($_GET['accuracy'])) {
+            $lon = $_GET['lon'];
+            $lat = $_GET['lat'];
+            $accuracy = $_GET['accuracy'];
+        /*
+            $lon_f = (float)$lon;
+            $lat_f = (float)$lat;
+            $accuracy_i = (int)$accuracy'
+        */
+
+            global $wpdb;
+            $table = $wpdb->prefix."locateme_positions";
+            $insert = "INSERT INTO $table(lon, lat, accuracy, timestamp) 
+                VALUES ($lon, $lat, $accuracy, now());";
+            $wpdb->query($insert);
+        }
+    }
+
+    add_action('parse_request', 'log_location');
+
+    function locateme_menu()
+    {
+        global $wpdb;
+        include 'locateme-admin.php';
+    }
+
+    function locateme_admin_actions()
+    {
+        add_options_page("LocateMe", "LocateMe", 1, "Locateme-Admin", "locateme_menu");
+    }
+
+    add_action('admin_menu', 'locateme_admin_actions');
 ?>
