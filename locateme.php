@@ -67,4 +67,15 @@
     }
 
     add_action('admin_menu', 'locateme_admin_actions');
+
+    function widget_locateme()
+    {
+    }
+
+    function widget_locateme_init()
+    {
+        register_sidebar_widget(__('LocateMe'), 'widget_locateme');
+    }
+
+    add_action('plugins_loaded', 'widget_locateme_init');
 ?>
