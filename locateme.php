@@ -39,11 +39,6 @@
             $lon = $_GET['lon'];
             $lat = $_GET['lat'];
             $accuracy = $_GET['accuracy'];
-        /*
-            $lon_f = (float)$lon;
-            $lat_f = (float)$lat;
-            $accuracy_i = (int)$accuracy'
-        */
 
             global $wpdb;
             $table = $wpdb->prefix."locateme_positions";
@@ -70,6 +65,10 @@
 
     function widget_locateme()
     {
+        echo $args['before_widget'];
+        echo $args['before_title'].'My Location'.$args['after_title'];
+        echo 'Last updated at:';
+        echo $args['after_widget'];
     }
 
     function widget_locateme_init()
@@ -78,4 +77,13 @@
     }
 
     add_action('plugins_loaded', 'widget_locateme_init');
+
+    function load_into_head()
+    {
+        ?>
+         <script src="http://maps.google.com/maps?file=api&amp;v=2&amp;sensor=true&amp;key=ABQIAAAAB0UeAVrHcKYQ0N4whilWdxSKLsCOZAQ73leuG-EShkJXto1kLBR8uSVUmJINExyDsq4A4RhP5IsWnA" type="text/javascript"></script>
+         <?php 
+    }
+
+    add_action(is_admin() ? 'admin_head' : 'wp_head', 'load_into_head');
 ?>
