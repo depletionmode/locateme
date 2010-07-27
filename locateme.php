@@ -107,16 +107,22 @@
                 mapTypeId: google.maps.MapTypeId.HYBRID
             }
             var map = new google.maps.Map(document.getElementById("map_canvas"), options);
-            /*var title = null;
+            var title = null;
+            var geocoder = new google.maps.Geocoder();
             geocoder.geocode({'latLng': latlng}, function(results, status) {
-                if (results[1])
-                    title = results[1].formatted_address;
-            });*/
+                if (status == google.maps.GeocoderStatus.OK) {
+                    if (results[1]) {
+                        title = results[1].formatted_address;
+                    }
+                }
+            });
             var marker = new google.maps.Marker({
                 position: latlng,
                 map: map,
                 title: title
             });
+
+            document.Write(title);
         }
         </script>
          <?php 
