@@ -65,14 +65,14 @@
 
     function widget_locateme($args)
     {
-	extract($args);
+	    extract($args);
         echo $args['before_widget'];
         echo $args['before_title'].'My Location'.$args['after_title'];
         ?>
         <div id="map_canvas" style="width:100%; height:100px;"></div>
+        <span id="location">MY LOCATION!</span> as of <span id="timestamp">TIME!</span>
 
         <?php 
-        echo 'as of ';
         echo $args['after_widget'];
     }
 
@@ -90,12 +90,15 @@
         foreach ($results as $result) {
             $lng = $result->lon;
             $lat = $result->lat;
+            $timestamp = $result->timestamp;
         }
         ?>
         <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
         <script type="text/javascript">
         var lat = <?php echo $lat; ?>;
         var lng = <?php echo $lng; ?>;
+        var timestamp = "<?php echo $timestamp ?>";
+        var title = null;
         function map_init() {
             var latlng = new google.maps.LatLng(lat,lng);
             var options = {
@@ -107,22 +110,44 @@
                 mapTypeId: google.maps.MapTypeId.HYBRID
             }
             var map = new google.maps.Map(document.getElementById("map_canvas"), options);
-            var title = null;
             var geocoder = new google.maps.Geocoder();
             geocoder.geocode({'latLng': latlng}, function(results, status) {
                 if (status == google.maps.GeocoderStatus.OK) {
-                    if (results[1]) {
-                        title = results[1].formatted_address;
+                    if (results[0]) {
+                        title = results[0].formatted_address;
                     }
                 }
+                var marker = new google.maps.Marker({
+                    position: latlng,
+                    map: map,
+                    title: title
+                });
+                document.getElementById('location').innerHTML = title;
+                document.getElementById('timestamp').innerHTML = timestamp;
             });
-            var marker = new google.maps.Marker({
+            /*var marker = new google.maps.Marker({
                 position: latlng,
                 map: map,
                 title: title
             });
+            var id = document.getElementById('location');
+            id.innerHTML = title;*/
 
-            document.Write(title);
+            function geolocate()
+            {
+                var title = null;
+                var latlng = new google.maps.LatLng(lat,lng);
+                var geocoder = new google.maps.Geocoder();
+                geocoder.geocode({'latLng': latlng}, function(results, status) {
+                    if (status == google.maps.GeocoderStatus.OK) {
+                        if (results[0]) {
+                            title = results[0].formatted_address;
+                        }
+                    }
+                });
+                var id = document.getElementById('location');
+                id.innerHTML = title;
+            }
         }
         </script>
          <?php 
