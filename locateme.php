@@ -63,15 +63,16 @@
 
     add_action('admin_menu', 'locateme_admin_actions');
 
-    function widget_locateme()
+    function widget_locateme($args)
     {
+	extract($args);
         echo $args['before_widget'];
         echo $args['before_title'].'My Location'.$args['after_title'];
         ?>
         <div id="map_canvas" style="width:100%; height:100px;"></div>
 
         <?php 
-        echo 'Last updated at:';
+        echo 'as of ';
         echo $args['after_widget'];
     }
 
@@ -84,24 +85,34 @@
 
     function load_into_head()
     {
+        global $wpdb;
+        $results = $wpdb->get_results("SELECT * FROM ".$wpdb->prefix."locateme_positions where id = (select max(id) from ".$wpdb->prefix."locateme_positions)");
+        foreach ($results as $result) {
+            $lng = $result->lon;
+            $lat = $result->lat;
+        }
         ?>
         <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
         <script type="text/javascript">
+        var lat = <?php echo $lat; ?>;
+        var lng = <?php echo $lng; ?>;
         function map_init() {
-            var latlng = new google.maps.LatLng(31.803694,35.208861);
+            var title = null;
+
+            var latlng = new google.maps.LatLng(lat,lng);
             var options = {
                 disableDefaultUI: true,
                 zoom: 5,
                 draggable: false,
                 disableDoubleClickZoom: true,
                 center: latlng,
-                mapTypeId: google.maps.MapTypeId.ROADMAP
+                mapTypeId: google.maps.MapTypeId.HYBRID
             }
             var map = new google.maps.Map(document.getElementById("map_canvas"), options);
             var marker = new google.maps.Marker({
                 position: latlng,
                 map: map,
-                title: "I'm currently here!"
+                title: title
             });
         }
         </script>
