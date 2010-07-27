@@ -97,8 +97,6 @@
         var lat = <?php echo $lat; ?>;
         var lng = <?php echo $lng; ?>;
         function map_init() {
-            var title = null;
-
             var latlng = new google.maps.LatLng(lat,lng);
             var options = {
                 disableDefaultUI: true,
@@ -109,6 +107,11 @@
                 mapTypeId: google.maps.MapTypeId.HYBRID
             }
             var map = new google.maps.Map(document.getElementById("map_canvas"), options);
+            /*var title = null;
+            geocoder.geocode({'latLng': latlng}, function(results, status) {
+                if (results[1])
+                    title = results[1].formatted_address;
+            });*/
             var marker = new google.maps.Marker({
                 position: latlng,
                 map: map,
