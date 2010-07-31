@@ -45,6 +45,8 @@
             $insert = "INSERT INTO $table(lon, lat, accuracy, timestamp) 
                 VALUES ($lon, $lat, $accuracy, now());";
             $wpdb->query($insert);
+
+            wp_die("OK");
         }
     }
 
@@ -69,8 +71,11 @@
         echo $args['before_widget'];
         echo $args['before_title'].'My Location'.$args['after_title'];
         ?>
-        <div id="map_canvas" style="width:100%; height:100px;"></div>
-        <span id="location">MY LOCATION!</span> as of <span id="timestamp">TIME!</span>
+        <div id="map_canvas" style="text-align: center; margin: 0 auto; width:92%; height:100px;"></div>
+        <div style="text-align: center;">
+            <span id="location">MY LOCATION!</span><br/>as of<br/><span id="timestamp">TIME!</span>
+        </div>
+        <div style="text-align: center;"><em>(<a href="/2010/07/28/locateme-wordpress-plugin/">see how this works</a>)</em></div>
 
         <?php 
         echo $args['after_widget'];
